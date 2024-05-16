@@ -7,13 +7,16 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
+  flutter: 3.19.6 # Fixed Flutter version
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  hive: ^2.2.3
   intl: ^0.18.1
+  mockito: ^5.4.4
 
 dev_dependencies:
   flutter_test:
