@@ -1,1 +1,0 @@
- /home/michurinnn/1/skeleton_saint_petersburg_city_guide/.dart_tool/flutter_gen/gen_l10n/app_localizations_en.dart /home/michurinnn/1/skeleton_saint_petersburg_city_guide/.dart_tool/flutter_gen/gen_l10n/app_localizations.dart:  /home/michurinnn/1/skeleton_saint_petersburg_city_guide/l10n.yaml /home/michurinnn/1/skeleton_saint_petersburg_city_guide/lib/src/localization/app_en.arb
