@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:todo_testwork/core/architecture/data/converter/converter.dart';
 import 'package:todo_testwork/core/architecture/data/domain/failure.dart';
 import 'package:todo_testwork/core/architecture/data/domain/request_operation.dart';
 import 'package:todo_testwork/core/architecture/data/domain/result.dart';
