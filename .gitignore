@@ -21,6 +21,8 @@
 .pub-cache/
 .pub/
 /build/
+linux/
+windows/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
