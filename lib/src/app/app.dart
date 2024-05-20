@@ -30,7 +30,7 @@ class App extends StatelessWidget {
           settings: routeSettings,
           builder: (context) {
             switch (routeSettings.name) {
-              case SettingsView.routeName:
+              case SampleItemListView.routeName:
                 return DIScope<TodoListScope>(
                     scope: TodoListScope.create(context),
                     child: const SampleItemListView());
