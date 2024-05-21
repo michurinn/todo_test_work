@@ -11,6 +11,7 @@ final class TodoConverterFromEntity extends Converter<TodoItem, TodoEntity> {
       id: input.id,
       title: input.title,
       isFinished: input.isCompleted,
+      index: DateTime.fromMillisecondsSinceEpoch(input.index),
     );
   }
 }
