@@ -23,7 +23,8 @@
 /build/
 linux/
 windows/
-
+*.g.*
+*.freezed.*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -410,3 +411,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+lib/src/todo_list_feature/data/data_source/database.g.dart
+lib/src/todo_list_feature/domain/entity/todo_entity.freezed.dart
