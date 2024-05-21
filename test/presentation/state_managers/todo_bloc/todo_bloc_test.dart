@@ -14,9 +14,22 @@ void main() {
   late MockITodosRepository todosRepository;
   late TodoBloc todoBloc;
   List<TodoEntity> todoList = [
-    const TodoEntity(id: 1, title: '1', isCompleted: false),
-    const TodoEntity(id: 2, title: '22', isCompleted: true),
-    const TodoEntity(id: 3, title: '333', isCompleted: false),
+    const TodoEntity(
+      id: 1,
+      title: '1',
+      index: 0,
+    ),
+    const TodoEntity(
+      id: 2,
+      title: '22',
+      isCompleted: true,
+      index: 1,
+    ),
+    const TodoEntity(
+      id: 3,
+      title: '333',
+      index: 2,
+    ),
   ];
   setUp(() {
     todosRepository = MockITodosRepository();
@@ -24,6 +37,11 @@ void main() {
   });
 
   group('TodoBloc', () {
+    test('initialState should be Loading', () {
+      // assert
+      expect(todoBloc.initialState, equals(Loading()));
+    });
+
     test('initialState should be Loading', () {
       // assert
       expect(todoBloc.initialState, equals(Loading()));
@@ -38,20 +56,21 @@ void main() {
             ResultOk(todoList),
           ),
         );
-        when(() => todosRepository.getTodos()).thenAnswer(
-          (_) => Future.value(
-            ResultOk(todoList),
-          ),
-        );
 
         // assert later
         final expected = [
-          Loading(),
-          Loaded(todoList),
+          Loaded(todoList: todoList),
         ];
-        unawaited(expectLater(todoBloc.stream, emitsInOrder(expected)));
+        unawaited(
+          expectLater(
+            todoBloc.stream,
+            emitsInOrder(expected),
+          ),
+        );
         // act
-        todoBloc.add(GetItemsEvent());
+        todoBloc.add(
+          GetItemsEvent(),
+        );
       },
     );
 
@@ -68,12 +87,18 @@ void main() {
         );
         // assert later
         final expected = [
-          Loading(),
           Error(''),
         ];
-        unawaited(expectLater(todoBloc.stream, emitsInOrder(expected)));
+        unawaited(
+          expectLater(
+            todoBloc.stream,
+            emitsInOrder(expected),
+          ),
+        );
         // act
-        todoBloc.add(GetItemsEvent());
+        todoBloc.add(
+          GetItemsEvent(),
+        );
       },
     );
 
@@ -81,7 +106,7 @@ void main() {
       'should successfully add an object',
       () async {
         // arrange
-        const newItem = TodoEntity(id: 4, title: '4444', isCompleted: false);
+        const newItem = TodoEntity(id: 4, title: '4444', index: 1);
         final resultList = List<TodoEntity>.from(todoList)..add(newItem);
         when(() => todosRepository.getTodos()).thenAnswer(
           (_) => Future.value(
@@ -95,18 +120,22 @@ void main() {
         );
         // assert later
         final List<TodoState> expected = [
-          Loading(),
-          Loaded(todoList),
-          Loaded(resultList),
+          Loaded(todoList: todoList),
+          Loaded(todoList: resultList),
         ];
-        unawaited(expectLater(todoBloc.stream, emitsInOrder(expected)));
+        unawaited(
+          expectLater(
+            todoBloc.stream,
+            emitsInOrder(expected),
+          ),
+        );
         // act
         todoBloc
           ..add(
             GetItemsEvent(),
           )
           ..add(
-            AddEvent(todo: newItem),
+            AddEvent(title: newItem.title),
           );
       },
     );
@@ -118,19 +147,34 @@ void main() {
         const newItem = TodoEntity(
           id: 3,
           title: '333',
+          index: 1,
           isCompleted: true,
         );
         List<TodoEntity> todoListUpdated = [
-          const TodoEntity(id: 1, title: '1', isCompleted: false),
-          const TodoEntity(id: 2, title: '22', isCompleted: true),
-          const TodoEntity(id: 3, title: '333', isCompleted: true),
+          const TodoEntity(
+            id: 1,
+            title: '1',
+            index: 1,
+          ),
+          const TodoEntity(
+            id: 2,
+            title: '22',
+            isCompleted: true,
+            index: 1,
+          ),
+          const TodoEntity(
+            id: 3,
+            title: '333',
+            isCompleted: true,
+            index: 1,
+          ),
         ];
         when(() => todosRepository.getTodos()).thenAnswer(
           (_) => Future.value(
             ResultOk(todoList),
           ),
         );
-        when(() => todosRepository.updateTodo(newItem.id, newItem.isCompleted))
+        when(() => todosRepository.doneTodo(newItem.id,))
             .thenAnswer(
           (_) => Future.value(
             const ResultOk(true),
@@ -138,19 +182,14 @@ void main() {
         );
         // assert later
         final List<TodoState> expected = [
-          Loading(),
-          Loaded(todoList),
-          Loaded(todoListUpdated),
+          Loaded(todoList: todoList),
+          Loaded(todoList: todoListUpdated),
         ];
         unawaited(expectLater(todoBloc.stream, emitsInOrder(expected)));
         // act
-        todoBloc
-          ..add(
-            GetItemsEvent(),
-          )
-          ..add(
-            DoneEvent(finished: true, id: newItem.id),
-          );
+        todoBloc.add(
+          DoneEvent(id: newItem.id),
+        );
       },
     );
 
@@ -162,10 +201,20 @@ void main() {
           id: 3,
           title: '333',
           isCompleted: true,
+          index: 1,
         );
         List<TodoEntity> todoListUpdated = [
-          const TodoEntity(id: 1, title: '1', isCompleted: false),
-          const TodoEntity(id: 2, title: '22', isCompleted: true),
+          const TodoEntity(
+            id: 1,
+            title: '1',
+            index: 0,
+          ),
+          const TodoEntity(
+            id: 2,
+            title: '22',
+            isCompleted: true,
+            index: 1,
+          ),
         ];
         when(() => todosRepository.getTodos()).thenAnswer(
           (_) => Future.value(
@@ -179,19 +228,13 @@ void main() {
         );
         // assert later
         final List<TodoState> expected = [
-          Loading(),
-          Loaded(todoList),
-          Loaded(todoListUpdated),
+          Loaded(todoList: todoListUpdated),
         ];
         unawaited(expectLater(todoBloc.stream, emitsInOrder(expected)));
         // act
-        todoBloc
-          ..add(
-            GetItemsEvent(),
-          )
-          ..add(
-            DeleteEvent(todo: newItem),
-          );
+        todoBloc.add(
+          DeleteEvent(id: newItem.id),
+        );
       },
     );
   });

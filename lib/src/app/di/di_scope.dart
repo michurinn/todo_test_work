@@ -13,7 +13,7 @@ class DIScope<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) => scope,
+      create: (context) => scope,
       child: child,
     );
   }

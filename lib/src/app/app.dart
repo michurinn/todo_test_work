@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:todo_testwork/src/app/di/di_scope.dart';
-import 'package:todo_testwork/src/settings/settings_view.dart';
 import 'package:todo_testwork/src/todo_list_feature/di/todo_list_scope.dart';
 import 'package:todo_testwork/src/todo_list_feature/presentation/pages/sample_item_list_view.dart';
 

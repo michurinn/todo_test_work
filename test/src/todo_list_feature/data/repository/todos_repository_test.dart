@@ -17,7 +17,14 @@ void main() {
   late TodoConverterFromEntity converterEntity;
   late AppDatabase db;
   setUp(() {
-    registerFallbackValue(const TodoItem(id: 1, isFinished: false, title: ''));
+    registerFallbackValue(
+      TodoItem(
+        id: 1,
+        isFinished: false,
+        title: '',
+        index: DateTime.now(),
+      ),
+    );
     converterDto = TodoConverterFromDto();
     converterEntity = TodoConverterFromEntity();
     db = MockTodoDatabase();
@@ -31,15 +38,22 @@ void main() {
   test('getTodos should return todos from data source', () async {
     // Arrange
     final todosDTO = [
-      TodoItem(id: 1, title: 'Todo 1', isFinished: false),
-      TodoItem(id: 2, title: 'Todo 2', isFinished: true),
-    ];
-    final todoEntities = [
-      TodoEntity(
+      TodoItem(
         id: 1,
         title: 'Todo 1',
+        isFinished: false,
+        index: DateTime.now(),
       ),
-      TodoEntity(id: 2, title: 'Todo 2', isCompleted: true),
+      TodoItem(
+        id: 2,
+        title: 'Todo 2',
+        isFinished: true,
+        index: DateTime.now(),
+      ),
+    ];
+    final todoEntities = [
+      TodoEntity(id: 1, title: 'Todo 1', index: 1),
+      TodoEntity(id: 2, title: 'Todo 2', isCompleted: true, index: 1),
     ];
     when(() => db.getTodo()).thenAnswer((_) async => Future.value(todosDTO));
 
@@ -53,7 +67,7 @@ void main() {
 
   test('addTodo should add todo to data source', () async {
     // Arrange
-    final todo = TodoEntity(id: 1, title: 'New Todo');
+    final todo = TodoEntity(id: 1, title: 'New Todo', index: 1);
 
     when(() => db.addTodo(any<TodoItem>()))
         .thenAnswer((_) async => Future.value(1));
@@ -68,22 +82,22 @@ void main() {
 
   test('updateDoto should add todo to data source', () async {
     // Arrange
-    final todo = TodoEntity(id: 1, title: 'New Todo');
+    final todo = TodoEntity(id: 1, title: 'New Todo', index: 1);
 
-    when(() => db.updateTodo(todo.id, todo.isCompleted))
+    when(() => db.completeTodo(todo.id,))
         .thenAnswer((_) async => Future.value(1));
 
     // Act
-    final result = await repository.updateTodo(todo.id, todo.isCompleted);
+    final result = await repository.doneTodo(todo.id, );
 
     // Assert
     expect((result as ResultOk).data, equals(true));
-    verify(() => db.updateTodo(todo.id, todo.isCompleted)).called(1);
+    verify(() => db.completeTodo(todo.id, )).called(1);
   });
 
   test('delete should add todo to data source', () async {
     // Arrange
-    final todo = TodoEntity(id: 1, title: 'New Todo');
+    final todo = TodoEntity(id: 1, title: 'New Todo', index: 1);
 
     when(() => db.deleteTodo(todo.id)).thenAnswer((_) async => Future.value(1));
 
