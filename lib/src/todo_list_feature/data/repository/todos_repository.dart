@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:todo_testwork/core/architecture/data/domain/failure.dart';
 import 'package:todo_testwork/core/architecture/data/domain/request_operation.dart';
 import 'package:todo_testwork/core/architecture/data/domain/result.dart';
@@ -21,73 +19,81 @@ class TodosRepository implements ITodosRepository {
   final TodoConverterFromDto todoDtoToEntityConverter;
 
   @override
-  RequestOperation<bool> addTodo(TodoEntity todo) async {
-    final Completer<Result<bool, Failure<Object?>>> completer = Completer();
+  RequestOperation<bool> updateTodo(int id, String title) async {
     try {
-      await database.addTodo(todoEntityToDtoConverter.convert(todo));
-      completer.complete(
-        const Result.ok(true),
-      );
+      await database.updateTodo(id, title);
+      return const Result.ok(true);
     } on Object catch (e, s) {
-      completer.complete(
-        Result.failed(
-          Failure(original: e, trace: s),
-        ),
+      return Result.failed(
+        Failure(original: e, trace: s),
       );
     }
-    return completer.future;
+  }
+
+  @override
+  RequestOperation<bool> addTodo(TodoEntity todo) async {
+    try {
+      await database.addTodo(todoEntityToDtoConverter.convert(todo));
+      return const Result.ok(true);
+    } on Object catch (e, s) {
+      return Result.failed(
+        Failure(original: e, trace: s),
+      );
+    }
+  }
+
+  @override
+  RequestOperation<bool> swapTodos(
+      {required int firstTodoId, required int secondTodoId}) async {
+    try {
+      await database.swapItems(firstTodoId, secondTodoId);
+      return const Result.ok(true);
+    } on Object catch (e, s) {
+      return Result.failed(
+        Failure(original: e, trace: s),
+      );
+    }
   }
 
   @override
   RequestOperation<bool> deleteTodo(int id) async {
-    final Completer<Result<bool, Failure<Object?>>> completer = Completer();
     try {
       await database.deleteTodo(id);
-      completer.complete(
-        const Result.ok(true),
-      );
+      return const Result.ok(true);
     } on Object catch (e, s) {
-      completer.complete(
-        Result.failed(
-          Failure(original: e, trace: s),
-        ),
+      return Result.failed(
+        Failure(original: e, trace: s),
       );
     }
-    return completer.future;
   }
 
   @override
   RequestOperation<List<TodoEntity>> getTodos() async {
-    final Completer<Result<List<TodoEntity>, Failure<Object?>>> completer =
-        Completer();
     try {
       final result = await database.getTodo();
       final converted =
           todoDtoToEntityConverter.convertMultiple(result).toList();
-      completer.complete(Result.ok(converted));
+      return Result.ok(converted);
     } on Object catch (e, s) {
-      completer.complete(
-        Result.failed(
-          Failure(original: e, trace: s),
-        ),
+      return Result.failed(
+        Failure(original: e, trace: s),
       );
     }
-    return completer.future;
   }
 
   @override
-  RequestOperation<bool> updateTodo(int id, bool isFinished) async {
-    final Completer<Result<bool, Failure<Object?>>> completer = Completer();
+  RequestOperation<bool> doneTodo(
+    int id,
+  ) async {
     try {
-      await database.updateTodo(id, isFinished);
-      completer.complete(const Result.ok(true));
+      await database.completeTodo(
+        id,
+      );
+      return const Result.ok(true);
     } on Object catch (e, s) {
-      completer.complete(
-        Result.failed(
-          Failure(original: e, trace: s),
-        ),
+      return Result.failed(
+        Failure(original: e, trace: s),
       );
     }
-    return completer.future;
   }
 }

@@ -9,44 +9,59 @@ final class GetItemsEvent extends TodoEvent {
   List<Object?> get props => [];
 }
 
-final class LoadFromStreamEvent extends TodoEvent {
-  LoadFromStreamEvent({required this.todoList});
+final class SwapEvent extends TodoEvent {
+  SwapEvent({
+    required this.firsItemId,
+    required this.secondItemId,
+  });
 
-  final List<TodoEntity> todoList;
+  final int firsItemId;
+  final int secondItemId;
   @override
-  List<Object?> get props => [todoList];
+  List<Object?> get props => [firsItemId, secondItemId];
 }
 
-final class ErrorFromStreamEvent extends TodoEvent {
-  ErrorFromStreamEvent({required this.errorMessage});
-
-  final String errorMessage;
+final class DeleteCheckedEvent extends TodoEvent {
+  DeleteCheckedEvent();
   @override
-  List<Object?> get props => [errorMessage];
+  List<Object?> get props => [];
+}
+
+final class SelectItem extends TodoEvent {
+  final int id;
+  SelectItem({required this.id});
+  @override
+  List<Object?> get props => [id];
+}
+
+final class UpdateItemTitle extends TodoEvent {
+  final int id;
+  final String title;
+  UpdateItemTitle({required this.id, required this.title});
+  @override
+  List<Object?> get props => [id, title];
 }
 
 final class AddEvent extends TodoEvent {
-  AddEvent({required this.todo});
+  AddEvent({required this.title});
 
-  final TodoEntity todo;
+  final String title;
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [title];
 }
 
 final class DoneEvent extends TodoEvent {
   DoneEvent({
-    required this.finished,
     required this.id,
   });
   final int id;
-  final bool finished;
   @override
-  List<Object?> get props => [finished];
+  List<Object?> get props => [id];
 }
 
 final class DeleteEvent extends TodoEvent {
-  final TodoEntity todo;
-  DeleteEvent({required this.todo});
+  final int id;
+  DeleteEvent({required this.id});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [id];
 }

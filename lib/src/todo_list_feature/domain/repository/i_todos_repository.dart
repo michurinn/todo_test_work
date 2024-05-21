@@ -5,7 +5,7 @@ abstract interface class ITodosRepository {
   RequestOperation<List<TodoEntity>> getTodos();
   RequestOperation<bool> deleteTodo(int id);
   RequestOperation<bool> addTodo(TodoEntity todo);
-  RequestOperation<bool> updateTodo(int id, bool isFinished);
-
- // Stream<Result<List<TodoEntity>, Failure<Object?>>> getDbSrtream();
+  RequestOperation<bool> doneTodo(int id);
+  RequestOperation<bool> updateTodo(int id, String title);
+  RequestOperation<bool> swapTodos({required int firstTodoId, required int secondTodoId});
 }

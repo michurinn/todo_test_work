@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:todo_testwork/core/architecture/data/domain/request_operation.dart';
 import 'package:todo_testwork/core/architecture/data/domain/result.dart';
 import 'package:todo_testwork/src/todo_list_feature/domain/entity/todo_entity.dart';
 import 'package:todo_testwork/src/todo_list_feature/domain/repository/i_todos_repository.dart';
@@ -12,115 +13,108 @@ import 'package:todo_testwork/src/todo_list_feature/domain/repository/i_todos_re
 part 'todo_event.dart';
 part 'todo_state.dart';
 
-const String SERVER_FAILURE_MESSAGE = 'Server Failure';
+const String QUERY_FAILURE_MESSAGE = 'Query Failure';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
-  //late final Stream<List<TodoEntity>> _todoListStream;
-  TodoBloc(this.todosRepository) : super(Loading()) {
+  TodoBloc(this.todosRepository)
+      : super(
+          Loading(),
+        ) {
     on<TodoEvent>((event, emitter) async {
       await switch (event) {
         GetItemsEvent() => getTodoList(event, emitter),
         AddEvent() => addTodo(event, emitter),
         DoneEvent() => doneTodo(event, emitter),
         DeleteEvent() => deleteTodo(event, emitter),
-        LoadFromStreamEvent() => updateFromStream(event, emitter),
-        ErrorFromStreamEvent() => errorFromStream(event, emitter),
+        SwapEvent() => swapTodos(event, emitter),
+        SelectItem() => selectItem(event, emitter),
+        DeleteCheckedEvent() => deleteCheckedItem(event, emitter),
+        UpdateItemTitle() => updateItemTitle(event, emitter),
       };
       // ignore: unused_label
       transformer:
       sequential();
     });
-    // _todoListStream = todosRepository.getDbSrtream();
-
-    // _todoListStream.listen((event) {
-    //   switch (event) {
-    //     case ResultOk():
-    //       add(LoadFromStreamEvent(todoList: event.data));
-    //     case ResultFailed():
-    //       add(
-    //         ErrorFromStreamEvent(
-    //           errorMessage: event.failure.toString(),
-    //         ),
-    //       );
-    //   }
-    // });
   }
   final ITodosRepository todosRepository;
 
   TodoState get initialState => Loading();
 
-  Future<void> updateFromStream(
-      LoadFromStreamEvent event, Emitter<TodoState> emitter) async {
+  Future<void> updateItemTitle(
+      UpdateItemTitle event, Emitter<TodoState> emitter) async {
+    await performWithUpdate(todosRepository.updateTodo(event.id, event.title));
+  }
+
+  Future<void> deleteCheckedItem(
+      DeleteCheckedEvent event, Emitter<TodoState> emitter) async {
+    final checkedId = state.selectedItemId;
+    if (checkedId != null) {
+      add(DeleteEvent(id: checkedId));
+    }
+  }
+
+  Future<void> selectItem(SelectItem event, Emitter<TodoState> emitter) async {
+    final uncheck = state.selectedItemId == event.id;
     emitter(
-      Loaded(event.todoList),
+      state.copyWith(
+        hiddenLoading: state.hiddenLoading,
+        selectedItemId: uncheck ? null : event.id,
+      ),
     );
   }
 
-  Future<void> errorFromStream(
-      ErrorFromStreamEvent event, Emitter<TodoState> emitter) async {
-    emitter(
-      Error(event.errorMessage),
-    );
+  Future<void> swapTodos(SwapEvent event, Emitter<TodoState> emitter) async {
+    await performWithUpdate(todosRepository.swapTodos(
+      firstTodoId: event.firsItemId,
+      secondTodoId: event.secondItemId,
+    ));
   }
 
   Future<void> addTodo(AddEvent event, Emitter<TodoState> emitter) async {
-    unawaited(todosRepository.addTodo(event.todo));
-    if (state is Loaded) {
-      emitter(
-        Loaded(
-          List.from((state as Loaded).todoList)
-            ..add(
-              event.todo,
-            ),
-        ),
-      );
-    }
+    final TodoEntity entity = TodoEntity.newDataWithoutId(
+      title: event.title,
+    );
+    await performWithUpdate(todosRepository.addTodo(entity));
   }
 
   Future<void> doneTodo(DoneEvent event, Emitter<TodoState> emitter) async {
-    unawaited(todosRepository.updateTodo(event.id, event.finished));
-    if (state is Loaded) {
-      final todoList = List<TodoEntity>.from((state as Loaded).todoList);
-      final index = todoList.indexWhere((element) => element.id == event.id);
-      final newItem = todoList[index].copyWith(isCompleted: event.finished);
-      todoList
-        ..removeAt(index)
-        ..insert(index, newItem);
+    await todosRepository.doneTodo(
+      event.id,
+    );
 
-      emitter(
-        Loaded(
-          todoList,
-        ),
-      );
-    }
+    add(
+      GetItemsEvent(),
+    );
   }
 
   Future<void> deleteTodo(DeleteEvent event, Emitter<TodoState> emitter) async {
-    unawaited(todosRepository.deleteTodo(event.todo.id));
-    if (state is Loaded) {
-      final todoList = List<TodoEntity>.from((state as Loaded).todoList);
-      final result = todoList
-        ..removeWhere((element) => element.id == event.todo.id);
-
-      emitter(
-        Loaded(
-          result,
-        ),
-      );
-    }
+    await performWithUpdate(todosRepository.deleteTodo(event.id));
   }
 
   Future<void> getTodoList(TodoEvent event, Emitter<TodoState> emitter) async {
-    emitter(
-      Loading(),
-    );
-
+    if (state is Loaded) {
+      emitter(
+        Loaded(todoList: (state as Loaded).todoList, setHiddenLoading: true),
+      );
+    }
     final result = await todosRepository.getTodos();
     switch (result) {
       case ResultOk(:final data):
-        emitter(Loaded(data));
+        final reversed = data.reversed.toList();
+        emitter(
+          Loaded(todoList: reversed),
+        );
       case ResultFailed():
-        emitter(Error(SERVER_FAILURE_MESSAGE));
+        emitter(
+          Error(QUERY_FAILURE_MESSAGE),
+        );
     }
+  }
+
+  Future<void> performWithUpdate(RequestOperation<bool> future) async {
+    await future;
+    add(
+      GetItemsEvent(),
+    );
   }
 }
