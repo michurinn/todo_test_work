@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter95/flutter95.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_testwork/src/app/app_constants/item_colors.dart';
 import 'package:todo_testwork/src/todo_list_feature/di/todo_list_scope.dart';
@@ -29,10 +30,11 @@ class SampleItemListView extends StatelessWidget {
                       onPressed: () async {
                         final title = await showDescriptionDialog(
                             context, selectedItem.title);
-                        bloc.add(
-                          UpdateItemTitle(
-                              id: selectedItem.id, title: title ?? ''),
-                        );
+                        if (title != null) {
+                          bloc.add(
+                            UpdateItemTitle(id: selectedItem.id, title: title),
+                          );
+                        }
                       },
                       icon: const Icon(Icons.edit),
                     ),
@@ -70,24 +72,45 @@ class SampleItemListView extends StatelessWidget {
                   itemCount: todoList.length,
                   itemBuilder: (context, index) {
                     final item = todoList[index];
-                    return DecoratedBox(
+                    return InkWell(
                       key: ValueKey(item.id),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: item.id == state.selectedItem?.id
-                              ? ItemColors.Amber.color.withOpacity(.2)
-                              : null),
-                      child: CheckboxListTile(
-                        value: item.isCompleted,
-                        tileColor: ItemColors.Blue.color.withOpacity(0.3),
-                        title: Text('${item.title} ${item.index} ${item.id}'),
-                        onChanged: (value) {
-                          if (value != null) {
-                            bloc.add(
-                              SelectItem(todo: item),
-                            );
-                          }
-                        },
+                      onTap: () => bloc.add(
+                        SelectItem(todo: item),
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: item.id == state.selectedItem?.id
+                                ? ItemColors.amber.color.withOpacity(.2)
+                                : null),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          tileColor: item.color.color.withOpacity(0.6),
+                          title: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Checkbox95(
+                                value: item.isCompleted,
+                                onChanged: (_) => bloc.add(
+                                  DoneEvent(
+                                    id: item.id,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                item.title,
+                                // TODO(me): replace with appStyles
+                                style: Flutter95.headerTextStyle
+                                    .copyWith(fontSize: 22),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },
