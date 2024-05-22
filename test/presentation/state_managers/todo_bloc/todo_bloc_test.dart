@@ -113,7 +113,7 @@ void main() {
             ResultOk(todoList),
           ),
         );
-        when(() => todosRepository.addTodo(newItem.title)).thenAnswer(
+        when(() => todosRepository.addTodo(newItem.title,newItem.color)).thenAnswer(
           (_) => Future.value(
             const ResultOk(true),
           ),

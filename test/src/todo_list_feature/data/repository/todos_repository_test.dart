@@ -19,11 +19,11 @@ void main() {
   setUp(() {
     registerFallbackValue(
       TodoItem(
-        id: 1,
-        isFinished: false,
-        title: '',
-        index: DateTime.now(),
-      ),
+          id: 1,
+          isFinished: false,
+          title: '',
+          index: DateTime.now(),
+          color: 112233),
     );
     converterDto = TodoConverterFromDto();
     converterEntity = TodoConverterFromEntity();
@@ -39,17 +39,17 @@ void main() {
     // Arrange
     final todosDTO = [
       TodoItem(
-        id: 1,
-        title: 'Todo 1',
-        isFinished: false,
-        index: DateTime.now(),
-      ),
+          id: 1,
+          title: 'Todo 1',
+          isFinished: false,
+          index: DateTime.now(),
+          color: 112233),
       TodoItem(
-        id: 2,
-        title: 'Todo 2',
-        isFinished: true,
-        index: DateTime.now(),
-      ),
+          id: 2,
+          title: 'Todo 2',
+          isFinished: true,
+          index: DateTime.now(),
+          color: 112233),
     ];
     final todoEntities = [
       TodoEntity(id: 1, title: 'Todo 1', index: 1),
@@ -69,15 +69,15 @@ void main() {
     // Arrange
     final todo = TodoEntity(id: 1, title: 'New Todo', index: 1);
 
-    when(() => db.addTodo(any<String>()))
+    when(() => db.addTodo(any<String>(), any<int>()))
         .thenAnswer((_) async => Future.value(1));
 
     // Act
-    final result = await repository.addTodo(todo.title);
+    final result = await repository.addTodo(todo.title, todo.color);
 
     // Assert
     expect((result as ResultOk).data, equals(true));
-    verify(() => db.addTodo(any<String>())).called(1);
+    verify(() => db.addTodo(any<String>(), any<int>())).called(1);
   });
 
   test('updateDoto should add todo to data source', () async {
