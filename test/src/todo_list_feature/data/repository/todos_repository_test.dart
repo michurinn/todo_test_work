@@ -69,30 +69,35 @@ void main() {
     // Arrange
     final todo = TodoEntity(id: 1, title: 'New Todo', index: 1);
 
-    when(() => db.addTodo(any<TodoItem>()))
+    when(() => db.addTodo(any<String>()))
         .thenAnswer((_) async => Future.value(1));
 
     // Act
-    final result = await repository.addTodo(todo);
+    final result = await repository.addTodo(todo.title);
 
     // Assert
     expect((result as ResultOk).data, equals(true));
-    verify(() => db.addTodo(any<TodoItem>())).called(1);
+    verify(() => db.addTodo(any<String>())).called(1);
   });
 
   test('updateDoto should add todo to data source', () async {
     // Arrange
     final todo = TodoEntity(id: 1, title: 'New Todo', index: 1);
 
-    when(() => db.completeTodo(todo.id,))
-        .thenAnswer((_) async => Future.value(1));
+    when(() => db.completeTodo(
+          todo.id,
+        )).thenAnswer((_) async => Future.value(1));
 
     // Act
-    final result = await repository.doneTodo(todo.id, );
+    final result = await repository.doneTodo(
+      todo.id,
+    );
 
     // Assert
     expect((result as ResultOk).data, equals(true));
-    verify(() => db.completeTodo(todo.id, )).called(1);
+    verify(() => db.completeTodo(
+          todo.id,
+        )).called(1);
   });
 
   test('delete should add todo to data source', () async {

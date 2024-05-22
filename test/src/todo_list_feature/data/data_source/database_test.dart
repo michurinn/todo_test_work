@@ -19,8 +19,8 @@ void main() {
         isFinished: false,
         title: '11');
     // act
-    final id = await database.addTodo(firstItem);
-    final secondId = await database.addTodo(firstItem);
+    final id = await database.addTodo(firstItem.title);
+    final secondId = await database.addTodo(firstItem.title);
     final user = await database.swapItems(firstItem.id, secondItem.id);
     final swapped = await database.getTodo();
     // assert
