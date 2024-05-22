@@ -3,6 +3,43 @@ import 'package:flutter/widgets.dart';
 import 'package:todo_testwork/src/app/app_constants/app_constants.dart';
 import 'package:todo_testwork/src/app/extensions/string_hardcoded.dart';
 
+
+Future<String?> showDescriptionDialog(
+  BuildContext context,
+  [String? initialText]
+) async {
+  String? storedText;
+  String onChanged(String text) => storedText = text;
+  final result = await showAdaptiveDialog<String?>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Add a new todo'.hardcoded),
+        content: _TodoDialog(
+          initialText: initialText,
+          onEditing: onChanged,
+        ),
+        actions: [
+          TextButton(
+            child: Text('Cancel'.hardcoded),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text('Add'.hardcoded),
+            onPressed: () {
+              Navigator.pop(context, storedText);
+            },
+          ),
+        ],
+      );
+    },
+  );
+  return result;
+}
+
+
 class _TodoDialog extends StatefulWidget {
   const _TodoDialog({super.key, this.initialText, required this.onEditing});
   final String? initialText;
@@ -46,39 +83,4 @@ class _TodoDialogState extends State<_TodoDialog> {
       maxLength: AppConstants.maxTitleLenght,
     );
   }
-}
-
-Future<String?> showDescriptionDialog(
-  BuildContext context,
-  [String? initialText]
-) async {
-  String? storedText;
-  String onChanged(String text) => storedText = text;
-  final result = await showAdaptiveDialog<String?>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Add a new todo'.hardcoded),
-        content: _TodoDialog(
-          initialText: initialText,
-          onEditing: onChanged,
-        ),
-        actions: [
-          TextButton(
-            child: Text('Cancel'.hardcoded),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            child: Text('Add'.hardcoded),
-            onPressed: () {
-              Navigator.pop(context, storedText);
-            },
-          ),
-        ],
-      );
-    },
-  );
-  return result;
 }
