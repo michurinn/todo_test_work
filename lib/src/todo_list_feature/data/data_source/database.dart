@@ -26,10 +26,10 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  Future<int> addTodo(TodoItem todo) async {
+  Future<int> addTodo(String title) async {
     return managers.todoItems.create(
       (o) => o(
-        title: todo.title,
+        title: title,
       ),
     );
   }

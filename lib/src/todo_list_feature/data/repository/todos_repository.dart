@@ -31,9 +31,9 @@ class TodosRepository implements ITodosRepository {
   }
 
   @override
-  RequestOperation<bool> addTodo(TodoEntity todo) async {
+  RequestOperation<bool> addTodo(String title) async {
     try {
-      await database.addTodo(todoEntityToDtoConverter.convert(todo));
+      await database.addTodo(title);
       return const Result.ok(true);
     } on Object catch (e, s) {
       return Result.failed(
