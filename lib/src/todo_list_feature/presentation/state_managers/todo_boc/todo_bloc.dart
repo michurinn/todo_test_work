@@ -7,6 +7,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:todo_testwork/core/architecture/data/domain/request_operation.dart';
 import 'package:todo_testwork/core/architecture/data/domain/result.dart';
+import 'package:todo_testwork/src/app/app_constants/item_colors.dart';
 import 'package:todo_testwork/src/todo_list_feature/domain/entity/todo_entity.dart';
 import 'package:todo_testwork/src/todo_list_feature/domain/repository/i_todos_repository.dart';
 
@@ -64,15 +65,30 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   Future<void> swapTodos(SwapEvent event, Emitter<TodoState> emitter) async {
-    await performWithUpdate(todosRepository.swapTodos(
+    if (state is Loaded) {
+      final stateList = (state as Loaded).todoList;
+      emitter(
+        Loaded(
+          todoList: stateList
+            ..insert(
+              stateList.indexWhere((el) => el.id == event.secondItemId),
+              stateList.removeAt(
+                stateList.indexWhere((el) => el.id == event.firsItemId),
+              ),
+            ),
+        ),
+      );
+    }
+    await todosRepository.swapTodos(
       firstTodoId: event.firsItemId,
       secondTodoId: event.secondItemId,
-    ));
+    );
   }
 
   Future<void> addTodo(AddEvent event, Emitter<TodoState> emitter) async {
-    
-    await performWithUpdate(todosRepository.addTodo(event.title));
+    final color = ItemColors.getRandom();
+
+    await performWithUpdate(todosRepository.addTodo(event.title, color));
   }
 
   Future<void> doneTodo(DoneEvent event, Emitter<TodoState> emitter) async {

@@ -1,6 +1,7 @@
 import 'package:todo_testwork/core/architecture/data/domain/failure.dart';
 import 'package:todo_testwork/core/architecture/data/domain/request_operation.dart';
 import 'package:todo_testwork/core/architecture/data/domain/result.dart';
+import 'package:todo_testwork/src/app/app_constants/item_colors.dart';
 import 'package:todo_testwork/src/todo_list_feature/data/converters/todo_converter_from_dto.dart';
 import 'package:todo_testwork/src/todo_list_feature/data/converters/todo_converter_to_dto.dart';
 import 'package:todo_testwork/src/todo_list_feature/data/data_source/database.dart';
@@ -31,9 +32,9 @@ class TodosRepository implements ITodosRepository {
   }
 
   @override
-  RequestOperation<bool> addTodo(String title) async {
+  RequestOperation<bool> addTodo(String title, ItemColors color) async {
     try {
-      await database.addTodo(title);
+      await database.addTodo(title, color.color.value);
       return const Result.ok(true);
     } on Object catch (e, s) {
       return Result.failed(
