@@ -7,6 +7,7 @@ class TodoEntity with _$TodoEntity {
   const factory TodoEntity({
     required int id,
     required String title,
+    required int index,
     @Default(false) bool isCompleted,
   }) = _TodoEntity;
 }
