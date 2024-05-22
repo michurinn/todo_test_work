@@ -28,10 +28,10 @@ final class DeleteCheckedEvent extends TodoEvent {
 }
 
 final class SelectItem extends TodoEvent {
-  final int id;
-  SelectItem({required this.id});
+  final TodoEntity todo;
+  SelectItem({required this.todo});
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [todo];
 }
 
 final class UpdateItemTitle extends TodoEvent {

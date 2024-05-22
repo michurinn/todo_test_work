@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_testwork/src/app/app_constants/item_colors.dart';
@@ -18,23 +17,21 @@ class SampleItemListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<TodoListScope>().todoListBloc;
-    if (kDebugMode) {
-      print('Print test');
-    }
     return Scaffold(
       appBar: AppBar(title: const Text('Sample Items'), actions: [
         BlocBuilder<TodoBloc, TodoState>(
           bloc: bloc,
           builder: (context, state) => switch (state) {
             Loading() => const SizedBox.shrink(),
-            Loaded(:final selectedItemId) => selectedItemId != null
+            Loaded(:final selectedItem) => selectedItem != null
                 ? Wrap(children: [
                     IconButton(
                       onPressed: () async {
-                        final title = await showDescriptionDialog(context);
+                        final title = await showDescriptionDialog(
+                            context, selectedItem.title);
                         bloc.add(
                           UpdateItemTitle(
-                              id: selectedItemId, title: title ?? ''),
+                              id: selectedItem.id, title: title ?? ''),
                         );
                       },
                       icon: const Icon(Icons.edit),
@@ -42,7 +39,7 @@ class SampleItemListView extends StatelessWidget {
                     IconButton(
                       onPressed: () => bloc.add(
                         DoneEvent(
-                          id: selectedItemId,
+                          id: selectedItem.id,
                         ),
                       ),
                       icon: const Icon(Icons.done_all_rounded),
@@ -77,16 +74,17 @@ class SampleItemListView extends StatelessWidget {
                       key: ValueKey(item.id),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: item.id == state.selectedItemId
+                          color: item.id == state.selectedItem?.id
                               ? ItemColors.Amber.color.withOpacity(.2)
                               : null),
                       child: CheckboxListTile(
                         value: item.isCompleted,
+                        tileColor: ItemColors.Blue.color.withOpacity(0.3),
                         title: Text('${item.title} ${item.index} ${item.id}'),
                         onChanged: (value) {
                           if (value != null) {
                             bloc.add(
-                              SelectItem(id: item.id),
+                              SelectItem(todo: item),
                             );
                           }
                         },
@@ -103,7 +101,7 @@ class SampleItemListView extends StatelessWidget {
             };
           }),
       floatingActionButton: FloatingActionButton.large(
-        child: const Icon(Icons.plus_one),
+        child: const Icon(Icons.add),
         onPressed: () async {
           final title = await showDescriptionDialog(context);
           if (title != null) {

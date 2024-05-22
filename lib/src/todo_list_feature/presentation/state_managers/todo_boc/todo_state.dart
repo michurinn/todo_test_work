@@ -1,11 +1,11 @@
 part of 'todo_bloc.dart';
 
 sealed class TodoState extends Equatable {
-  TodoState({required this.hiddenLoading, this.selectedItemId});
-  final int? selectedItemId;
+  TodoState({required this.hiddenLoading, this.selectedItem});
+  final TodoEntity? selectedItem;
   final bool hiddenLoading;
 
-  TodoState copyWith({bool? hiddenLoading, int? selectedItemId});
+  TodoState copyWith({bool? hiddenLoading, TodoEntity? selectedItem});
 }
 
 final class Loading extends TodoState {
@@ -15,31 +15,31 @@ final class Loading extends TodoState {
   List<Object?> get props => [];
 
   @override
-  TodoState copyWith({bool? hiddenLoading, int? selectedItemId}) {
+  TodoState copyWith({bool? hiddenLoading, TodoEntity? selectedItem }) {
     // TODO: implement copyWith
     throw UnimplementedError();
   }
 }
 
 final class Loaded extends TodoState {
-  Loaded({required this.todoList, this.setHiddenLoading, this.selectedItemId})
+  Loaded({required this.todoList, this.setHiddenLoading, this.selectedItem})
       : super(
             hiddenLoading: setHiddenLoading ?? false,
-            selectedItemId: selectedItemId);
+            selectedItem: selectedItem);
   final List<TodoEntity> todoList;
 
   final bool? setHiddenLoading;
-  final int? selectedItemId;
+  final TodoEntity? selectedItem;
 
   @override
-  List<Object?> get props => [todoList, setHiddenLoading, selectedItemId];
+  List<Object?> get props => [todoList, setHiddenLoading, selectedItem];
 
   @override
-  TodoState copyWith({bool? hiddenLoading, int? selectedItemId}) {
+  TodoState copyWith({bool? hiddenLoading, TodoEntity? selectedItem}) {
     return Loaded(
       todoList: todoList,
       setHiddenLoading: hiddenLoading ?? setHiddenLoading,
-      selectedItemId: selectedItemId ?? selectedItemId,
+      selectedItem: selectedItem ?? selectedItem,
     );
   }
 }
@@ -52,7 +52,7 @@ final class Error extends TodoState {
   List<Object?> get props => [message];
 
   @override
-  TodoState copyWith({bool? hiddenLoading, int? selectedItemId}) {
+  TodoState copyWith({bool? hiddenLoading, TodoEntity?  selectedItem}) {
     // TODO: implement copyWith
     throw UnimplementedError();
   }

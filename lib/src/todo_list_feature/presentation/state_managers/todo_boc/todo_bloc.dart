@@ -47,18 +47,18 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   Future<void> deleteCheckedItem(
       DeleteCheckedEvent event, Emitter<TodoState> emitter) async {
-    final checkedId = state.selectedItemId;
+    final checkedId = state.selectedItem?.id;
     if (checkedId != null) {
       add(DeleteEvent(id: checkedId));
     }
   }
 
   Future<void> selectItem(SelectItem event, Emitter<TodoState> emitter) async {
-    final uncheck = state.selectedItemId == event.id;
+    final uncheck = state.selectedItem?.id == event.todo.id;
     emitter(
       state.copyWith(
         hiddenLoading: state.hiddenLoading,
-        selectedItemId: uncheck ? null : event.id,
+        selectedItem: uncheck ? null : event.todo,
       ),
     );
   }
@@ -71,10 +71,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   Future<void> addTodo(AddEvent event, Emitter<TodoState> emitter) async {
-    final TodoEntity entity = TodoEntity.newDataWithoutId(
-      title: event.title,
-    );
-    await performWithUpdate(todosRepository.addTodo(entity));
+    
+    await performWithUpdate(todosRepository.addTodo(event.title));
   }
 
   Future<void> doneTodo(DoneEvent event, Emitter<TodoState> emitter) async {
