@@ -9,10 +9,11 @@ import 'package:todo_testwork/src/todo_list_feature/presentation/widgets/show_de
 
 /// Displays a list of SampleItems.
 class SampleItemListView extends StatelessWidget {
+  /// Displays a list of SampleItems.
   const SampleItemListView({
     super.key,
   });
-
+  /// route name
   static const routeName = '/';
 
   @override
@@ -48,7 +49,7 @@ class SampleItemListView extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () => bloc.add(
-                        DeleteCheckedEvent(),
+                        const DeleteCheckedEvent(),
                       ),
                       icon: const Icon(Icons.delete_forever_outlined),
                     )

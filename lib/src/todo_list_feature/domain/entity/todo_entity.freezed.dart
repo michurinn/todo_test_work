@@ -19,52 +19,8 @@ mixin _$TodoEntity {
   int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
+  ItemColors get color => throw _privateConstructorUsedError;
   bool get isCompleted => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(int id, String title, int index, bool isCompleted)
-        $default, {
-    required TResult Function(int id, String title, int index, bool isCompleted)
-        newDataWithoutId,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int id, String title, int index, bool isCompleted)?
-        $default, {
-    TResult? Function(int id, String title, int index, bool isCompleted)?
-        newDataWithoutId,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int id, String title, int index, bool isCompleted)?
-        $default, {
-    TResult Function(int id, String title, int index, bool isCompleted)?
-        newDataWithoutId,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_TodoEntity value) $default, {
-    required TResult Function(_TodoEntityNewDataWithoutId value)
-        newDataWithoutId,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_TodoEntity value)? $default, {
-    TResult? Function(_TodoEntityNewDataWithoutId value)? newDataWithoutId,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_TodoEntity value)? $default, {
-    TResult Function(_TodoEntityNewDataWithoutId value)? newDataWithoutId,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TodoEntityCopyWith<TodoEntity> get copyWith =>
@@ -77,7 +33,8 @@ abstract class $TodoEntityCopyWith<$Res> {
           TodoEntity value, $Res Function(TodoEntity) then) =
       _$TodoEntityCopyWithImpl<$Res, TodoEntity>;
   @useResult
-  $Res call({int id, String title, int index, bool isCompleted});
+  $Res call(
+      {int id, String title, int index, ItemColors color, bool isCompleted});
 }
 
 /// @nodoc
@@ -96,6 +53,7 @@ class _$TodoEntityCopyWithImpl<$Res, $Val extends TodoEntity>
     Object? id = null,
     Object? title = null,
     Object? index = null,
+    Object? color = null,
     Object? isCompleted = null,
   }) {
     return _then(_value.copyWith(
@@ -111,6 +69,10 @@ class _$TodoEntityCopyWithImpl<$Res, $Val extends TodoEntity>
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
+      color: null == color
+          ? _value.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as ItemColors,
       isCompleted: null == isCompleted
           ? _value.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -127,7 +89,8 @@ abstract class _$$TodoEntityImplCopyWith<$Res>
       __$$TodoEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String title, int index, bool isCompleted});
+  $Res call(
+      {int id, String title, int index, ItemColors color, bool isCompleted});
 }
 
 /// @nodoc
@@ -144,6 +107,7 @@ class __$$TodoEntityImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? index = null,
+    Object? color = null,
     Object? isCompleted = null,
   }) {
     return _then(_$TodoEntityImpl(
@@ -159,6 +123,10 @@ class __$$TodoEntityImplCopyWithImpl<$Res>
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
+      color: null == color
+          ? _value.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as ItemColors,
       isCompleted: null == isCompleted
           ? _value.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -174,6 +142,7 @@ class _$TodoEntityImpl implements _TodoEntity {
       {required this.id,
       required this.title,
       required this.index,
+      this.color = ItemColors.green,
       this.isCompleted = false});
 
   @override
@@ -184,11 +153,14 @@ class _$TodoEntityImpl implements _TodoEntity {
   final int index;
   @override
   @JsonKey()
+  final ItemColors color;
+  @override
+  @JsonKey()
   final bool isCompleted;
 
   @override
   String toString() {
-    return 'TodoEntity(id: $id, title: $title, index: $index, isCompleted: $isCompleted)';
+    return 'TodoEntity(id: $id, title: $title, index: $index, color: $color, isCompleted: $isCompleted)';
   }
 
   @override
@@ -199,87 +171,20 @@ class _$TodoEntityImpl implements _TodoEntity {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.index, index) || other.index == index) &&
+            (identical(other.color, color) || other.color == color) &&
             (identical(other.isCompleted, isCompleted) ||
                 other.isCompleted == isCompleted));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, index, isCompleted);
+  int get hashCode =>
+      Object.hash(runtimeType, id, title, index, color, isCompleted);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$TodoEntityImplCopyWith<_$TodoEntityImpl> get copyWith =>
       __$$TodoEntityImplCopyWithImpl<_$TodoEntityImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(int id, String title, int index, bool isCompleted)
-        $default, {
-    required TResult Function(int id, String title, int index, bool isCompleted)
-        newDataWithoutId,
-  }) {
-    return $default(id, title, index, isCompleted);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int id, String title, int index, bool isCompleted)?
-        $default, {
-    TResult? Function(int id, String title, int index, bool isCompleted)?
-        newDataWithoutId,
-  }) {
-    return $default?.call(id, title, index, isCompleted);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int id, String title, int index, bool isCompleted)?
-        $default, {
-    TResult Function(int id, String title, int index, bool isCompleted)?
-        newDataWithoutId,
-    required TResult orElse(),
-  }) {
-    if ($default != null) {
-      return $default(id, title, index, isCompleted);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_TodoEntity value) $default, {
-    required TResult Function(_TodoEntityNewDataWithoutId value)
-        newDataWithoutId,
-  }) {
-    return $default(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_TodoEntity value)? $default, {
-    TResult? Function(_TodoEntityNewDataWithoutId value)? newDataWithoutId,
-  }) {
-    return $default?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_TodoEntity value)? $default, {
-    TResult Function(_TodoEntityNewDataWithoutId value)? newDataWithoutId,
-    required TResult orElse(),
-  }) {
-    if ($default != null) {
-      return $default(this);
-    }
-    return orElse();
-  }
 }
 
 abstract class _TodoEntity implements TodoEntity {
@@ -287,6 +192,7 @@ abstract class _TodoEntity implements TodoEntity {
       {required final int id,
       required final String title,
       required final int index,
+      final ItemColors color,
       final bool isCompleted}) = _$TodoEntityImpl;
 
   @override
@@ -296,198 +202,11 @@ abstract class _TodoEntity implements TodoEntity {
   @override
   int get index;
   @override
+  ItemColors get color;
+  @override
   bool get isCompleted;
   @override
   @JsonKey(ignore: true)
   _$$TodoEntityImplCopyWith<_$TodoEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$TodoEntityNewDataWithoutIdImplCopyWith<$Res>
-    implements $TodoEntityCopyWith<$Res> {
-  factory _$$TodoEntityNewDataWithoutIdImplCopyWith(
-          _$TodoEntityNewDataWithoutIdImpl value,
-          $Res Function(_$TodoEntityNewDataWithoutIdImpl) then) =
-      __$$TodoEntityNewDataWithoutIdImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int id, String title, int index, bool isCompleted});
-}
-
-/// @nodoc
-class __$$TodoEntityNewDataWithoutIdImplCopyWithImpl<$Res>
-    extends _$TodoEntityCopyWithImpl<$Res, _$TodoEntityNewDataWithoutIdImpl>
-    implements _$$TodoEntityNewDataWithoutIdImplCopyWith<$Res> {
-  __$$TodoEntityNewDataWithoutIdImplCopyWithImpl(
-      _$TodoEntityNewDataWithoutIdImpl _value,
-      $Res Function(_$TodoEntityNewDataWithoutIdImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? index = null,
-    Object? isCompleted = null,
-  }) {
-    return _then(_$TodoEntityNewDataWithoutIdImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      index: null == index
-          ? _value.index
-          : index // ignore: cast_nullable_to_non_nullable
-              as int,
-      isCompleted: null == isCompleted
-          ? _value.isCompleted
-          : isCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$TodoEntityNewDataWithoutIdImpl implements _TodoEntityNewDataWithoutId {
-  const _$TodoEntityNewDataWithoutIdImpl(
-      {this.id = 0,
-      required this.title,
-      this.index = 0,
-      this.isCompleted = false});
-
-  @override
-  @JsonKey()
-  final int id;
-  @override
-  final String title;
-  @override
-  @JsonKey()
-  final int index;
-  @override
-  @JsonKey()
-  final bool isCompleted;
-
-  @override
-  String toString() {
-    return 'TodoEntity.newDataWithoutId(id: $id, title: $title, index: $index, isCompleted: $isCompleted)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TodoEntityNewDataWithoutIdImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.index, index) || other.index == index) &&
-            (identical(other.isCompleted, isCompleted) ||
-                other.isCompleted == isCompleted));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id, title, index, isCompleted);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TodoEntityNewDataWithoutIdImplCopyWith<_$TodoEntityNewDataWithoutIdImpl>
-      get copyWith => __$$TodoEntityNewDataWithoutIdImplCopyWithImpl<
-          _$TodoEntityNewDataWithoutIdImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(int id, String title, int index, bool isCompleted)
-        $default, {
-    required TResult Function(int id, String title, int index, bool isCompleted)
-        newDataWithoutId,
-  }) {
-    return newDataWithoutId(id, title, index, isCompleted);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int id, String title, int index, bool isCompleted)?
-        $default, {
-    TResult? Function(int id, String title, int index, bool isCompleted)?
-        newDataWithoutId,
-  }) {
-    return newDataWithoutId?.call(id, title, index, isCompleted);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int id, String title, int index, bool isCompleted)?
-        $default, {
-    TResult Function(int id, String title, int index, bool isCompleted)?
-        newDataWithoutId,
-    required TResult orElse(),
-  }) {
-    if (newDataWithoutId != null) {
-      return newDataWithoutId(id, title, index, isCompleted);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_TodoEntity value) $default, {
-    required TResult Function(_TodoEntityNewDataWithoutId value)
-        newDataWithoutId,
-  }) {
-    return newDataWithoutId(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_TodoEntity value)? $default, {
-    TResult? Function(_TodoEntityNewDataWithoutId value)? newDataWithoutId,
-  }) {
-    return newDataWithoutId?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_TodoEntity value)? $default, {
-    TResult Function(_TodoEntityNewDataWithoutId value)? newDataWithoutId,
-    required TResult orElse(),
-  }) {
-    if (newDataWithoutId != null) {
-      return newDataWithoutId(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _TodoEntityNewDataWithoutId implements TodoEntity {
-  const factory _TodoEntityNewDataWithoutId(
-      {final int id,
-      required final String title,
-      final int index,
-      final bool isCompleted}) = _$TodoEntityNewDataWithoutIdImpl;
-
-  @override
-  int get id;
-  @override
-  String get title;
-  @override
-  int get index;
-  @override
-  bool get isCompleted;
-  @override
-  @JsonKey(ignore: true)
-  _$$TodoEntityNewDataWithoutIdImplCopyWith<_$TodoEntityNewDataWithoutIdImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }

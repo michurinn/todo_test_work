@@ -1,43 +1,64 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:sqlite3/sqlite3.dart';
+import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:todo_testwork/src/app/app_constants/app_constants.dart';
 
 part 'database.g.dart';
 
+/// Table of TodoItem
 class TodoItems extends Table {
+  /// Unique id
   IntColumn get id => integer().autoIncrement()();
+
+  /// Index in the list: by default item recently created has bigger index
   DateTimeColumn get index => dateTime().withDefault(currentDateAndTime)();
+
+  /// Title of the item
   TextColumn get title =>
       text().withLength(min: 1, max: AppConstants.maxTitleLenght)();
+
+  /// Color of the item
+  IntColumn get color => integer().withDefault(const Constant(0xFFAABBCC))();
+
+  /// Is item completed
   BoolColumn get isFinished => boolean().withDefault(const Constant(false))();
 }
 
 @DriftDatabase(tables: [TodoItems])
+
+/// App's database
 class AppDatabase extends _$AppDatabase {
+  /// App's database
   AppDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
 
-  Future<int> addTodo(String title) async {
-    return managers.todoItems.create(
+  /// CRUD - C
+  Future<int> addTodo(String title, int color) async {
+    final result = await managers.todoItems.createReturning(
       (o) => o(
         title: title,
+        color: Value<int>(color),
       ),
     );
+    return result.id;
   }
 
+  /// CRUD - R
   Future<List<TodoItem>> getTodo() async {
     return managers.todoItems.orderBy((o) => o.index.asc()).get();
   }
 
+  /// CRUD - U
   Future<int> updateTodo(int id, String title) async {
     await managers.todoItems.filter((o) => o.id(id)).getSingle();
     final result = managers.todoItems.filter((f) => f.id.equals(id)).update(
@@ -48,6 +69,7 @@ class AppDatabase extends _$AppDatabase {
     return result;
   }
 
+  /// CRUD - U
   Future<int> completeTodo(
     int id,
   ) async {
@@ -60,20 +82,64 @@ class AppDatabase extends _$AppDatabase {
     return result;
   }
 
+  /// CRUD - U
   Future<bool> swapItems(int firstItemId, int secoItremId) async {
+    //TODO(me): replace this logic in SQL
     final first =
         await managers.todoItems.filter((o) => o.id(firstItemId)).getSingle();
     final second =
         await managers.todoItems.filter((o) => o.id(secoItremId)).getSingle();
-    final updated = first.copyWith(
-      index: second.index.add(
-        Duration(milliseconds: 100),
-      ),
-    );
-    final result = await managers.todoItems.replace(updated);
-    return result;
+    if (first.index.isAfter(second.index)) {
+      //Moving down
+      final downgradedSubree = await managers.todoItems
+          .filter((o) => o.index.isAfterOrOn(second.index))
+          .orderBy((o) => o.index.asc())
+          .get()
+        ..remove(first);
+      for (final item in downgradedSubree) {
+        await managers.todoItems.filter((o) => o.id(item.id)).update(
+              (o) => o(
+                index: Value(
+                  second.index.add(
+                    Duration(
+                      seconds: 1 + downgradedSubree.indexOf(item),
+                    ),
+                  ),
+                ),
+              ),
+            );
+      }
+    } else {
+      //Moving up
+      final upgradedSubree = await managers.todoItems
+          .filter((o) => o.index.isBeforeOrOn(second.index))
+          .orderBy((o) => o.index.desc())
+          .get()
+        ..remove(first);
+      for (final item in upgradedSubree) {
+        final addict = upgradedSubree.indexOf(item);
+        final addictValue = second.index.subtract(
+          Duration(
+            seconds: 1 + addict,
+          ),
+        );
+        await managers.todoItems.filter((o) => o.id(item.id)).update(
+              (o) => o(
+                index: Value(addictValue),
+              ),
+            );
+      }
+    }
+    await managers.todoItems.filter((o) => o.id(firstItemId)).update(
+          (o) => o(
+            index: Value(second.index),
+          ),
+        );
+
+    return true;
   }
 
+  /// CRUD - D
   Future<int> deleteTodo(int id) async {
     final result = await managers.todoItems.filter((f) => f.id(id)).delete();
     return result;

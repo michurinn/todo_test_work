@@ -13,10 +13,12 @@ import 'package:todo_testwork/src/todo_list_feature/domain/repository/i_todos_re
 
 part 'todo_event.dart';
 part 'todo_state.dart';
-
+// TODO(me): replace with exact message
+// ignore: public_member_api_docs
 const String QUERY_FAILURE_MESSAGE = 'Query Failure';
-
+/// The block for operating of states
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
+  /// The block for operating of states
   TodoBloc(this.todosRepository)
       : super(
           Loading(),
@@ -37,15 +39,17 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       sequential();
     });
   }
+  /// The repository for the operating with Todo's in the database.
   final ITodosRepository todosRepository;
 
+  // ignore: public_member_api_docs
   TodoState get initialState => Loading();
-
+  /// Updates the title of item with current id
   Future<void> updateItemTitle(
       UpdateItemTitle event, Emitter<TodoState> emitter) async {
     await performWithUpdate(todosRepository.updateTodo(event.id, event.title));
   }
-
+  /// Deletes the item with current id
   Future<void> deleteCheckedItem(
       DeleteCheckedEvent event, Emitter<TodoState> emitter) async {
     final checkedId = state.selectedItem?.id;
@@ -53,7 +57,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       add(DeleteEvent(id: checkedId));
     }
   }
-
+  /// MArks the item as selected
   Future<void> selectItem(SelectItem event, Emitter<TodoState> emitter) async {
     final uncheck = state.selectedItem?.id == event.todo.id;
     emitter(
@@ -63,8 +67,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       ),
     );
   }
-
+  /// Replace items in the list
   Future<void> swapTodos(SwapEvent event, Emitter<TodoState> emitter) async {
+    /// Silently replacing data only in the state for preventing awaiting the response 
     if (state is Loaded) {
       final stateList = (state as Loaded).todoList;
       emitter(
@@ -84,13 +89,13 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       secondTodoId: event.secondItemId,
     );
   }
-
+  /// Add to todo with currenr title
   Future<void> addTodo(AddEvent event, Emitter<TodoState> emitter) async {
     final color = ItemColors.getRandom();
 
     await performWithUpdate(todosRepository.addTodo(event.title, color));
   }
-
+  /// Marks todo as completed
   Future<void> doneTodo(DoneEvent event, Emitter<TodoState> emitter) async {
     await todosRepository.doneTodo(
       event.id,
@@ -100,11 +105,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       GetItemsEvent(),
     );
   }
-
+  /// REmoves todo
   Future<void> deleteTodo(DeleteEvent event, Emitter<TodoState> emitter) async {
     await performWithUpdate(todosRepository.deleteTodo(event.id));
   }
-
+  /// Get list of todos
   Future<void> getTodoList(TodoEvent event, Emitter<TodoState> emitter) async {
     if (state is Loaded) {
       emitter(
@@ -124,7 +129,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         );
     }
   }
-
+  /// Perform the request and update the state with real db data
   Future<void> performWithUpdate(RequestOperation<bool> future) async {
     await future;
     add(

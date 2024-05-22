@@ -8,15 +8,22 @@ import 'package:todo_testwork/src/todo_list_feature/data/data_source/database.da
 import 'package:todo_testwork/src/todo_list_feature/domain/entity/todo_entity.dart';
 import 'package:todo_testwork/src/todo_list_feature/domain/repository/i_todos_repository.dart';
 
+/// The repository for the operating with Todo's in the database.
 class TodosRepository implements ITodosRepository {
+  /// The repository for the operating with Todo's in the database.
   TodosRepository({
     required this.database,
     required this.todoEntityToDtoConverter,
     required this.todoDtoToEntityConverter,
   });
 
+  /// No comment
   final AppDatabase database;
+
+  /// Converter for converting a [TodoEntity] to a [TodoItem].
   final TodoConverterFromEntity todoEntityToDtoConverter;
+
+  /// Converter for converting a [TodoItem] to a [TodoEntity].
   final TodoConverterFromDto todoDtoToEntityConverter;
 
   @override

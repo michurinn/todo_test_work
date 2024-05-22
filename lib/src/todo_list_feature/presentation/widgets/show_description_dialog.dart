@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:todo_testwork/src/app/app_constants/app_constants.dart';
 import 'package:todo_testwork/src/app/extensions/string_hardcoded.dart';
 
 
-Future<String?> showDescriptionDialog(
-  BuildContext context,
-  [String? initialText]
-) async {
+/// Shows a dialog that allows the user to enter a new todo description.
+///
+/// [context] The BuildContext used to display the dialog.
+/// [initialText] An optional initial text to pre-fill the dialog's text field.
+///
+/// Returns the text entered by the user, or `null` if the dialog was canceled.
+Future<String?> showDescriptionDialog(BuildContext context,
+    [String? initialText]) async {
   String? storedText;
   String onChanged(String text) => storedText = text;
   final result = await showAdaptiveDialog<String?>(
@@ -41,7 +44,7 @@ Future<String?> showDescriptionDialog(
 
 
 class _TodoDialog extends StatefulWidget {
-  const _TodoDialog({super.key, this.initialText, required this.onEditing});
+  const _TodoDialog({required this.onEditing, this.initialText});
   final String? initialText;
   final ValueChanged<String> onEditing;
   @override

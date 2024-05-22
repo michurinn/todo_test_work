@@ -3,8 +3,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:todo_testwork/src/app/di/di_scope.dart';
 import 'package:todo_testwork/src/todo_list_feature/di/todo_list_scope.dart';
 import 'package:todo_testwork/src/todo_list_feature/presentation/pages/sample_item_list_view.dart';
-
+/// {@template app.class}
+/// Application.
+/// {@endtemplate}
 class App extends StatelessWidget {
+  /// {@macro app.class}
   const App({
     super.key,
   });

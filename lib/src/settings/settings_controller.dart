@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 
 import 'package:todo_testwork/src/settings/settings_service.dart';
